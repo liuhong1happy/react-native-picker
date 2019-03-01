@@ -10,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.os.Build;
@@ -151,7 +154,7 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
     public void _init(ReadableMap options) {
         Activity activity = getCurrentActivity();
         if (activity != null && options.hasKey(PICKER_DATA)) {
-            View view = activity.getLayoutInflater().inflate(R.layout.picker_view, null);
+            final View view = activity.getLayoutInflater().inflate(R.layout.picker_view, null);
             RelativeLayout barLayout = (RelativeLayout) view.findViewById(R.id.barLayout);
             TextView cancelTV = (TextView) view.findViewById(R.id.cancel);
             TextView titleTV = (TextView) view.findViewById(R.id.title);
@@ -170,15 +173,15 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
             } else {
                 barViewHeight = (int) (activity.getResources().getDisplayMetrics().density * 40);
             }
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     RelativeLayout.LayoutParams.MATCH_PARENT,
                     barViewHeight);
             barLayout.setLayoutParams(params);
 
             if (options.hasKey(PICKER_TOOL_BAR_BG)) {
-                ReadableArray array = options.getArray(PICKER_TOOL_BAR_BG);
-                int[] colors = getColor(array);
-                barLayout.setBackgroundColor(argb(colors[3], colors[0], colors[1], colors[2]));
+//                ReadableArray array = options.getArray(PICKER_TOOL_BAR_BG);
+//                int[] colors = getColor(array);
+//                barLayout.setBackgroundColor(argb(colors[3], colors[0], colors[1], colors[2]));
             }
 
             if (options.hasKey(PICKER_TOOL_BAR_TEXT_SIZE)) {
@@ -386,9 +389,9 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
                 pickerLayout.setBackgroundColor(argb(colors[3], colors[0], colors[1], colors[2]));
             }
 
-            int height = barViewHeight + pickerViewHeight;
+            final int height = barViewHeight + pickerViewHeight;
             if (dialog == null) {
-                dialog = new Dialog(activity, R.style.Dialog_Full_Screen);
+                dialog = new Dialog(activity, R.style.BottomDialog);
                 dialog.setContentView(view);
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 Window window = dialog.getWindow();
@@ -406,9 +409,9 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
                     layoutParams.format = PixelFormat.TRANSPARENT;
                     layoutParams.windowAnimations = R.style.PickerAnim;
                     layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    layoutParams.height = height;
+                    layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
                     layoutParams.gravity = Gravity.BOTTOM;
-                    window.setAttributes(layoutParams);   
+                    window.setAttributes(layoutParams);
                 }
             } else {
                 dialog.dismiss();
