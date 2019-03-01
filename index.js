@@ -50,6 +50,10 @@ export default {
         });
     },
 
+    update(params) {
+        Picker._update(params);
+    },
+
     show(){
         Picker.show();
     },

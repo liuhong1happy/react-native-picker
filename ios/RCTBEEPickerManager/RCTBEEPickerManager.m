@@ -34,6 +34,14 @@
 
 RCT_EXPORT_MODULE();
 
+RCT_EXPORT_METHOD(_update:(NSDictionary *)indic){
+    id pickerData=indic[@"pickerData"];
+    NSArray *selectArry=indic[@"selectedValue"];
+    NSMutableDictionary *dataDic=[[NSMutableDictionary alloc]init];
+    dataDic[@"pickerData"]=pickerData;
+    [self.pick update:dataDic selectValueArry:selectArry];
+}
+
 RCT_EXPORT_METHOD(_init:(NSDictionary *)indic){
 
     dispatch_async(dispatch_get_main_queue(), ^{

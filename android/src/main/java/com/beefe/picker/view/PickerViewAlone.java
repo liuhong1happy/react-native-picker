@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 public class PickerViewAlone extends LinearLayout {
 
-    private LinearLayout pickerViewAloneLayout;
+    public LinearLayout pickerViewAloneLayout;
 
     private OnSelectedListener onSelectedListener;
 
@@ -68,8 +68,9 @@ public class PickerViewAlone extends LinearLayout {
     }
 
     private void setAloneData(ReadableArray array) {
+        int childCount = pickerViewAloneLayout.getChildCount();
         ArrayList<String> values = arrayToList(array);
-        final LoopView loopView = new LoopView(getContext());
+        final LoopView loopView = childCount>0 ?(LoopView)pickerViewAloneLayout.getChildAt(0): new LoopView(getContext());
         LayoutParams params = new LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         params.weight = 1.0f;
@@ -96,10 +97,13 @@ public class PickerViewAlone extends LinearLayout {
                 }
             }
         });
-        pickerViewAloneLayout.addView(loopView);
+
+        if(childCount==0)
+            pickerViewAloneLayout.addView(loopView);
     }
 
     private void setMultipleData(ReadableArray array, double[] weights) {
+        int childCount = pickerViewAloneLayout.getChildCount();
         final String[] selectedItems = new String[array.size()];
         final int[] selectedIndexes = new int[array.size()];
         for (int i = 0; i < array.size(); i++) {
@@ -107,7 +111,7 @@ public class PickerViewAlone extends LinearLayout {
                 case "Array":
                     ReadableArray childArray = array.getArray(i);
                     ArrayList<String> values = arrayToList(childArray);
-                    final LoopView loopView = new LoopView(getContext());
+                    final LoopView loopView = childCount>0 ? (LoopView)pickerViewAloneLayout.getChildAt(i) : new LoopView(getContext());
                     LayoutParams params = new LayoutParams(0, LayoutParams.MATCH_PARENT);
                     if (weights != null) {
                         if (i < weights.length) {
@@ -156,7 +160,8 @@ public class PickerViewAlone extends LinearLayout {
                             }
                         }
                     });
-                    pickerViewAloneLayout.addView(loopView);
+                    if(childCount==0)
+                        pickerViewAloneLayout.addView(loopView);
                     break;
                 default:
                     break;

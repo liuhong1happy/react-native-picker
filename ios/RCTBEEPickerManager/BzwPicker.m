@@ -45,6 +45,17 @@
     }
     return self;
 }
+
+-(void)update:(NSDictionary *)dic selectValueArry:(NSArray *)selectValueArry
+{
+    self.pickerDic=dic;
+    self.selectValueArry=selectValueArry;
+    [self getStyle];
+    [self getnumStyle];
+    [self selectRow];
+}
+
+
 -(void)makeuiWith:(NSArray *)topbgColor With:(NSArray *)bottombgColor With:(NSArray *)leftbtnbgColor With:(NSArray *)rightbtnbgColor With:(NSArray *)centerbtnColor
 {
     self.parentView.backgroundColor = [UIColor whiteColor];
@@ -94,7 +105,6 @@
     [self.parentView addSubview:self.pick];
     
     self.pick.backgroundColor=[self colorWith:bottombgColor];
-    
 }
 //返回显示的列数
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView

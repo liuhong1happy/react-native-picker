@@ -139,6 +139,7 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
 
     private PickerViewLinkage pickerViewLinkage;
     private PickerViewAlone pickerViewAlone;
+    private View pickerView;
 
     public PickerViewModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -154,14 +155,14 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
     public void _init(ReadableMap options) {
         Activity activity = getCurrentActivity();
         if (activity != null && options.hasKey(PICKER_DATA)) {
-            final View view = activity.getLayoutInflater().inflate(R.layout.picker_view, null);
-            RelativeLayout barLayout = (RelativeLayout) view.findViewById(R.id.barLayout);
-            TextView cancelTV = (TextView) view.findViewById(R.id.cancel);
-            TextView titleTV = (TextView) view.findViewById(R.id.title);
-            TextView confirmTV = (TextView) view.findViewById(R.id.confirm);
-            RelativeLayout pickerLayout = (RelativeLayout) view.findViewById(R.id.pickerLayout);
-            pickerViewLinkage = (PickerViewLinkage) view.findViewById(R.id.pickerViewLinkage);
-            pickerViewAlone = (PickerViewAlone) view.findViewById(R.id.pickerViewAlone);
+            pickerView = activity.getLayoutInflater().inflate(R.layout.picker_view, null);
+            RelativeLayout barLayout = (RelativeLayout) pickerView.findViewById(R.id.barLayout);
+            TextView cancelTV = (TextView) pickerView.findViewById(R.id.cancel);
+            TextView titleTV = (TextView) pickerView.findViewById(R.id.title);
+            TextView confirmTV = (TextView) pickerView.findViewById(R.id.confirm);
+            RelativeLayout pickerLayout = (RelativeLayout) pickerView.findViewById(R.id.pickerLayout);
+            pickerViewLinkage = (PickerViewLinkage) pickerView.findViewById(R.id.pickerViewLinkage);
+            pickerViewAlone = (PickerViewAlone) pickerView.findViewById(R.id.pickerViewAlone);
 
             int barViewHeight;
             if (options.hasKey(PICKER_TOOL_BAR_HEIGHT)) {
@@ -392,7 +393,7 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
             final int height = barViewHeight + pickerViewHeight;
             if (dialog == null) {
                 dialog = new Dialog(activity, R.style.BottomDialog);
-                dialog.setContentView(view);
+                dialog.setContentView(pickerView);
                 WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
                 Window window = dialog.getWindow();
                 if (window != null) {
@@ -415,8 +416,27 @@ public class PickerViewModule extends ReactContextBaseJavaModule implements Life
                 }
             } else {
                 dialog.dismiss();
-                dialog.setContentView(view);
+                dialog.setContentView(pickerView);
             }
+        }
+    }
+
+    @ReactMethod
+    public void _update(ReadableMap options) {
+        Activity activity = getCurrentActivity();
+        ReadableArray pickerData = options.getArray(PICKER_DATA);
+        switch (curStatus) {
+            case 0:
+                pickerViewAlone.setPickerData(pickerData, weights);
+                break;
+            case 1:
+                pickerViewLinkage.setPickerData(pickerData, weights);
+                break;
+        }
+        if (options.hasKey(SELECTED_VALUE)) {
+            ReadableArray array = options.getArray(SELECTED_VALUE);
+            String[] selectedValue = getSelectedValue(array);
+            select(selectedValue);
         }
     }
 
